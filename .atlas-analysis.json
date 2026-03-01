@@ -1,0 +1,143 @@
+{
+  "projectType": "saas",
+  "projectName": "cmux",
+  "projectDescription": "Ghostty-based macOS terminal with vertical tabs and notifications for AI coding agents",
+  "theme": "aspen",
+  "primaryColor": "#3B82F6",
+  "lightColor": "#60A5FA",
+  "darkColor": "#2563EB",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/notifications",
+              "features/workspaces-and-tabs",
+              "features/splits-and-panes",
+              "features/browser",
+              "features/keyboard-shortcuts"
+            ]
+          },
+          {
+            "group": "Automation",
+            "pages": [
+              "automation/overview",
+              "automation/cli-reference",
+              "automation/socket-api",
+              "automation/environment-variables"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/claude-code",
+              "integrations/opencode",
+              "integrations/custom-agents"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/settings",
+              "configuration/ghostty-config",
+              "configuration/themes"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI Reference",
+        "groups": [
+          {
+            "group": "Commands",
+            "pages": [
+              "cli/windows",
+              "cli/workspaces",
+              "cli/surfaces",
+              "cli/panes",
+              "cli/browser",
+              "cli/notifications"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Resources",
+        "groups": [
+          {
+            "group": "More",
+            "pages": [
+              "resources/philosophy",
+              "resources/troubleshooting",
+              "resources/contributing",
+              "resources/changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Notification rings and panel for AI coding agents",
+    "Vertical tabs with git branch and PR metadata",
+    "Horizontal and vertical split panes",
+    "In-app browser with scriptable API",
+    "CLI and socket API for automation",
+    "Workspace and surface management",
+    "Ghostty-compatible configuration",
+    "GPU-accelerated terminal rendering",
+    "Session restore and persistence",
+    "Command palette and keyboard shortcuts"
+  ],
+  "publicApiSurface": [
+    "cmux ping",
+    "cmux list-windows",
+    "cmux new-window",
+    "cmux list-workspaces",
+    "cmux new-workspace",
+    "cmux rename-workspace",
+    "cmux close-workspace",
+    "cmux select-workspace",
+    "cmux list-panes",
+    "cmux new-pane",
+    "cmux focus-pane",
+    "cmux new-split",
+    "cmux list-panels",
+    "cmux new-surface",
+    "cmux close-surface",
+    "cmux focus-panel",
+    "cmux send",
+    "cmux read-screen",
+    "cmux notify",
+    "cmux list-notifications",
+    "cmux jump-to-unread",
+    "cmux browser open",
+    "cmux browser click",
+    "cmux browser snapshot",
+    "cmux tree",
+    "Socket API: window.focus",
+    "Socket API: workspace.create",
+    "Socket API: workspace.list",
+    "Socket API: workspace.select",
+    "Socket API: surface.create",
+    "Socket API: surface.split",
+    "Socket API: surface.focus",
+    "Socket API: pane.create",
+    "Socket API: pane.list",
+    "Socket API: browser.navigate",
+    "Environment: CMUX_WORKSPACE_ID",
+    "Environment: CMUX_SURFACE_ID",
+    "Environment: CMUX_SOCKET_PATH"
+  ]
+}
