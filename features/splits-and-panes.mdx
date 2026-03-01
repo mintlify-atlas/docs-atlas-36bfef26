@@ -82,7 +82,7 @@ Divider positions are saved in session state and restored on app relaunch.
 Close a split pane:
 - Press <kbd>⌘</kbd> <kbd>W</kbd> to close the active surface
 - Click the close button (×) on the tab
-- Use the CLI: `cmux surface.close`
+- Use the CLI: `cmux close-surface`
 
 When you close a pane:
 - The adjacent pane expands to fill the space
@@ -142,13 +142,13 @@ Create splits programmatically via the socket API:
 
 ```bash
 # Split the active pane right
-cmux pane.split --orientation vertical
+cmux new-split right
 
 # Split down
-cmux pane.split --orientation horizontal
+cmux new-split down
 
-# Create a browser split
-cmux pane.split --orientation vertical --browser
+# Create a browser pane
+cmux new-pane --type browser --direction right
 ```
 
 This is useful for scripting workspace layouts:
@@ -156,9 +156,9 @@ This is useful for scripting workspace layouts:
 ```bash
 #!/bin/bash
 # Set up a full-stack dev workspace
-cmux workspace.new --title "Full Stack Dev"
-cmux pane.split --orientation vertical --browser
-cmux surface.send-text "npm run dev\n"
+cmux new-workspace
+cmux new-pane --type browser --direction right
+cmux send "npm run dev\n"
 ```
 
 ## Drag and drop

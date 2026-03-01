@@ -10,7 +10,7 @@ cmux includes a WKWebView-based browser that can be split alongside terminals. T
 Create a browser surface:
 
 - Press <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>L</kbd> to open a browser in a split
-- Use the CLI: `cmux browser.new`
+- Use the CLI: `cmux new-pane --type browser`
 - Click the browser split button in the UI
 
 The browser opens in a new split pane next to your terminal.
@@ -153,7 +153,7 @@ The browser includes a scriptable API for AI agent interaction, ported from [age
 Capture the accessibility tree for page structure:
 
 ```bash
-cmux browser.snapshot
+cmux browser snapshot
 ```
 
 Returns a JSON representation of the page's accessibility tree, useful for agents to understand page layout without parsing raw HTML.
@@ -164,13 +164,13 @@ Agents can interact with page elements:
 
 ```bash
 # Click an element by reference
-cmux browser.click --ref <element-ref>
+cmux browser click --ref <element-ref>
 
 # Fill a form field
-cmux browser.fill --ref <element-ref> --value "text"
+cmux browser fill --ref <element-ref> --value "text"
 
 # Evaluate JavaScript
-cmux browser.eval "document.title"
+cmux browser eval "document.title"
 ```
 
 These commands use element references from the accessibility tree snapshot.
