@@ -1,0 +1,884 @@
+---
+title: CLI reference
+description: Complete reference for the cmux command-line tool
+---
+
+The `cmux` CLI provides a convenient interface to control cmux via the Unix socket.
+
+## Installation
+
+The `cmux` CLI is bundled with cmux.app and automatically added to `/usr/local/bin/cmux` when you first launch the app.
+
+Verify installation:
+
+```bash
+cmux version
+```
+
+## Global flags
+
+These flags can be used with any command:
+
+<ParamField path="--socket" type="string" default="/tmp/cmux.sock">
+  Path to the Unix socket. Defaults to `CMUX_SOCKET_PATH` env var or `/tmp/cmux.sock`.
+</ParamField>
+
+<ParamField path="--json" type="boolean">
+  Output JSON instead of human-readable text.
+</ParamField>
+
+<ParamField path="--id-format" type="string" default="refs">
+  Output format for handles: `refs`, `uuids`, or `both`.
+</ParamField>
+
+<ParamField path="--window" type="string">
+  Target a specific window by ID, ref, or index. Commands will focus this window first.
+</ParamField>
+
+<ParamField path="--password" type="string">
+  Socket password for authentication (overrides `CMUX_SOCKET_PASSWORD` env var).
+</ParamField>
+
+## Open directory
+
+Open a directory in cmux (launches cmux if not running):
+
+```bash
+cmux <path>
+```
+
+<CodeGroup>
+```bash Current directory
+cmux .
+```
+
+```bash Specific path
+cmux ~/projects/my-app
+```
+
+```bash Home directory
+cmux ~
+```
+</CodeGroup>
+
+## System commands
+
+### version
+
+Show cmux version:
+
+```bash
+cmux version
+```
+
+### ping
+
+Test socket connectivity:
+
+```bash
+cmux ping
+```
+
+### capabilities
+
+List socket API capabilities:
+
+```bash
+cmux capabilities --json
+```
+
+### identify
+
+Get information about the current context:
+
+```bash
+cmux identify
+cmux identify --workspace workspace:1
+cmux identify --surface surface:2
+cmux identify --no-caller  # omit caller context
+```
+
+## Window commands
+
+### list-windows
+
+List all windows:
+
+```bash
+cmux list-windows
+cmux list-windows --json
+```
+
+### current-window
+
+Get the current window ID:
+
+```bash
+cmux current-window
+```
+
+### new-window
+
+Create a new window:
+
+```bash
+cmux new-window
+```
+
+### focus-window
+
+Focus a window:
+
+```bash
+cmux focus-window --window window:1
+cmux focus-window --window 0  # by index
+```
+
+### close-window
+
+Close a window:
+
+```bash
+cmux close-window --window window:1
+```
+
+## Workspace commands
+
+### list-workspaces
+
+List all workspaces:
+
+```bash
+cmux list-workspaces
+cmux list-workspaces --json
+```
+
+**Output:**
+```
+  workspace:1  Project A
+* workspace:2  Project B  [selected]
+  workspace:3
+```
+
+### new-workspace
+
+Create a new workspace:
+
+```bash
+cmux new-workspace
+cmux new-workspace --cwd ~/projects/my-app
+cmux new-workspace --cwd ~/dev --command "npm run dev"
+```
+
+<ParamField path="--cwd" type="string">
+  Set the working directory for the new workspace.
+</ParamField>
+
+<ParamField path="--command" type="string">
+  Run a command after creating the workspace (automatically appends `\\n`).
+</ParamField>
+
+### current-workspace
+
+Get the current workspace ID:
+
+```bash
+cmux current-workspace
+```
+
+### select-workspace
+
+Switch to a workspace:
+
+```bash
+cmux select-workspace --workspace workspace:2
+cmux select-workspace --workspace 1  # by index
+```
+
+### close-workspace
+
+Close a workspace:
+
+```bash
+cmux close-workspace --workspace workspace:1
+```
+
+### rename-workspace
+
+Rename a workspace:
+
+```bash
+cmux rename-workspace My Project
+cmux rename-workspace --workspace workspace:2 Backend Server
+```
+
+### move-workspace-to-window
+
+Move a workspace to a different window:
+
+```bash
+cmux move-workspace-to-window --workspace workspace:1 --window window:2
+```
+
+### reorder-workspace
+
+Reorder workspaces in the sidebar:
+
+```bash
+cmux reorder-workspace --workspace workspace:3 --index 0
+cmux reorder-workspace --workspace workspace:1 --before workspace:2
+cmux reorder-workspace --workspace workspace:1 --after workspace:3
+```
+
+### workspace-action
+
+Perform workspace actions:
+
+```bash
+cmux workspace-action --action next
+cmux workspace-action --action previous
+cmux workspace-action --action last
+cmux workspace-action --action rename --title "New Name"
+cmux workspace-action --workspace workspace:1 --action select
+```
+
+**Available actions:**
+- `next`, `previous`, `last`: Navigate workspaces
+- `select`: Switch to workspace
+- `close`: Close workspace
+- `rename`: Rename workspace (requires `--title`)
+
+## Pane commands
+
+### list-panes
+
+List panes in a workspace:
+
+```bash
+cmux list-panes
+cmux list-panes --workspace workspace:1
+```
+
+### new-pane
+
+Create a new pane:
+
+```bash
+cmux new-pane --direction right
+cmux new-pane --type browser --direction down --url https://example.com
+cmux new-pane --workspace workspace:1 --direction left
+```
+
+<ParamField path="--type" type="string" default="terminal">
+  Pane type: `terminal` or `browser`.
+</ParamField>
+
+<ParamField path="--direction" type="string" default="right">
+  Split direction: `left`, `right`, `up`, `down`.
+</ParamField>
+
+<ParamField path="--workspace" type="string">
+  Target workspace ID/ref/index.
+</ParamField>
+
+<ParamField path="--url" type="string">
+  URL for browser panes.
+</ParamField>
+
+### focus-pane
+
+Focus a pane:
+
+```bash
+cmux focus-pane --pane pane:1
+cmux focus-pane --pane 0 --workspace workspace:1
+```
+
+### list-pane-surfaces
+
+List surfaces in a pane:
+
+```bash
+cmux list-pane-surfaces --pane pane:1
+cmux list-pane-surfaces --pane 0 --workspace workspace:1
+```
+
+## Surface/tab commands
+
+### list-panels
+
+List surfaces (also called "panels" or "tabs") in a workspace:
+
+```bash
+cmux list-panels
+cmux list-panels --workspace workspace:1
+```
+
+### new-surface
+
+Create a new surface in a pane:
+
+```bash
+cmux new-surface
+cmux new-surface --type browser --url https://example.com
+cmux new-surface --pane pane:1 --workspace workspace:1
+```
+
+### new-split
+
+Create a split from the current surface:
+
+```bash
+cmux new-split right
+cmux new-split down --workspace workspace:1
+cmux new-split left --surface surface:2
+```
+
+### close-surface
+
+Close a surface:
+
+```bash
+cmux close-surface
+cmux close-surface --surface surface:3 --workspace workspace:1
+```
+
+### focus-panel
+
+Focus a surface:
+
+```bash
+cmux focus-panel --panel surface:2
+cmux focus-panel --panel 1 --workspace workspace:1
+```
+
+### move-surface
+
+Move a surface to a different pane/workspace/window:
+
+```bash
+cmux move-surface --surface surface:1 --pane pane:2
+cmux move-surface --surface 0 --workspace workspace:2
+cmux move-surface --surface surface:1 --before surface:3
+cmux move-surface --surface surface:1 --index 0 --focus true
+```
+
+### reorder-surface
+
+Reorder surfaces within a pane:
+
+```bash
+cmux reorder-surface --surface surface:3 --index 0
+cmux reorder-surface --surface surface:1 --before surface:2
+```
+
+### tab-action
+
+Perform tab actions (surfaces can be called "tabs"):
+
+```bash
+cmux tab-action --action next
+cmux tab-action --action previous
+cmux tab-action --action close --tab tab:2
+cmux tab-action --action rename --title "Build Output"
+```
+
+**Available actions:**
+- `next`, `previous`: Navigate tabs
+- `close`: Close tab
+- `rename`: Rename tab (requires `--title`)
+- `reload`: Reload browser tab (requires `--url` for terminal tabs)
+
+### rename-tab
+
+Rename a tab:
+
+```bash
+cmux rename-tab My Terminal
+cmux rename-tab --tab tab:2 Backend Logs
+cmux rename-tab --workspace workspace:1 --surface surface:3 Tests
+```
+
+## Terminal I/O commands
+
+### read-screen
+
+Read terminal screen content:
+
+```bash
+cmux read-screen
+cmux read-screen --scrollback
+cmux read-screen --lines 100
+cmux read-screen --workspace workspace:1 --surface surface:2
+```
+
+<ParamField path="--scrollback" type="boolean">
+  Include scrollback buffer.
+</ParamField>
+
+<ParamField path="--lines" type="integer">
+  Number of lines to read (implies `--scrollback`).
+</ParamField>
+
+### send
+
+Send text to a terminal:
+
+```bash
+cmux send git status
+cmux send --workspace workspace:1 npm run dev
+cmux send --surface surface:2 "echo hello\\necho world"
+```
+
+<Note>
+  Use `\\n` for newlines and `\\t` for tabs. The CLI automatically unescapes these sequences.
+</Note>
+
+### send-key
+
+Send a key sequence to a terminal:
+
+```bash
+cmux send-key ctrl+c
+cmux send-key enter
+cmux send-key --surface surface:1 escape
+```
+
+## Notification commands
+
+### notify
+
+Create a notification:
+
+```bash
+cmux notify --title "Build Complete" --subtitle "Success" --body "App deployed"
+cmux notify --title "Error" --body "Tests failed" --workspace workspace:1
+```
+
+<ParamField path="--title" type="string" required>
+  Notification title.
+</ParamField>
+
+<ParamField path="--subtitle" type="string">
+  Notification subtitle.
+</ParamField>
+
+<ParamField path="--body" type="string">
+  Notification body text.
+</ParamField>
+
+### list-notifications
+
+List all notifications:
+
+```bash
+cmux list-notifications
+cmux list-notifications --json
+```
+
+### clear-notifications
+
+Clear all notifications:
+
+```bash
+cmux clear-notifications
+```
+
+## Sidebar metadata commands
+
+These commands update workspace sidebar UI with status, progress, and logs:
+
+### set-status
+
+Set a status indicator:
+
+```bash
+cmux set-status build Running
+cmux set-status deploy Success --icon checkmark --color "#00ff00"
+cmux set-status error "Connection failed" --icon warning --color "#ff0000"
+```
+
+### clear-status
+
+Clear a status indicator:
+
+```bash
+cmux clear-status build
+```
+
+### list-status
+
+List all status indicators:
+
+```bash
+cmux list-status
+cmux list-status --workspace workspace:1
+```
+
+### set-progress
+
+Set a progress indicator:
+
+```bash
+cmux set-progress 0.5
+cmux set-progress 0.75 --label "Deploying..."
+cmux set-progress 1.0 --workspace workspace:2
+```
+
+### clear-progress
+
+Clear progress indicator:
+
+```bash
+cmux clear-progress
+```
+
+### log
+
+Add a log entry to the workspace sidebar:
+
+```bash
+cmux log "Server started on port 3000"
+cmux log "Warning: deprecated API" --level warn --source server
+cmux log "Fatal error" --level error --workspace workspace:1
+```
+
+<ParamField path="--level" type="string" default="info">
+  Log level: `info`, `warn`, `error`, `debug`.
+</ParamField>
+
+<ParamField path="--source" type="string">
+  Log source identifier.
+</ParamField>
+
+### list-log
+
+List log entries:
+
+```bash
+cmux list-log
+cmux list-log --limit 50 --workspace workspace:1
+```
+
+### clear-log
+
+Clear all log entries:
+
+```bash
+cmux clear-log
+cmux clear-log --workspace workspace:1
+```
+
+## Browser automation commands
+
+All browser commands use the `browser` subcommand:
+
+```bash
+cmux browser [--surface <id>] <subcommand> [options]
+```
+
+### browser open
+
+Open a URL in a new browser split:
+
+```bash
+cmux browser open https://example.com
+cmux browser open-split https://github.com
+```
+
+### browser navigate
+
+Navigate to a URL:
+
+```bash
+cmux browser navigate https://google.com
+cmux browser goto https://news.ycombinator.com --snapshot-after
+```
+
+### browser back/forward/reload
+
+Browser navigation:
+
+```bash
+cmux browser back
+cmux browser forward
+cmux browser reload --snapshot-after
+```
+
+### browser url
+
+Get current URL:
+
+```bash
+cmux browser url
+cmux browser get-url --surface surface:1
+```
+
+### browser snapshot
+
+Capture page snapshot (accessibility tree):
+
+```bash
+cmux browser snapshot
+cmux browser snapshot --interactive
+cmux browser snapshot --selector ".main-content" --max-depth 3
+cmux browser snapshot --compact --cursor
+```
+
+<ParamField path="--interactive" type="boolean">
+  Include only interactive elements.
+</ParamField>
+
+<ParamField path="--cursor" type="boolean">
+  Show which element has focus.
+</ParamField>
+
+<ParamField path="--compact" type="boolean">
+  Compact output format.
+</ParamField>
+
+<ParamField path="--max-depth" type="integer">
+  Maximum tree depth.
+</ParamField>
+
+<ParamField path="--selector" type="string">
+  CSS selector to scope snapshot.
+</ParamField>
+
+### browser eval
+
+Execute JavaScript:
+
+```bash
+cmux browser eval "document.title"
+cmux browser eval "return window.innerWidth"
+```
+
+### browser wait
+
+Wait for page conditions:
+
+```bash
+cmux browser wait --selector ".loading" --timeout 5
+cmux browser wait --text "Success"
+cmux browser wait --url-contains "complete"
+cmux browser wait --load-state interactive
+cmux browser wait --function "() => document.readyState === 'complete'"
+```
+
+### browser click/hover/focus
+
+Interact with elements:
+
+```bash
+cmux browser click "button.submit"
+cmux browser dblclick "#item"
+cmux browser hover ".menu-item"
+cmux browser focus "input[name='username']"
+cmux browser scroll-into-view ".footer"
+```
+
+### browser type/fill
+
+Fill input fields:
+
+```bash
+cmux browser type "input[name='email']" user@example.com
+cmux browser fill "textarea" "Long text content"
+cmux browser fill "input" ""  # clear input
+```
+
+### browser press
+
+Press keyboard keys:
+
+```bash
+cmux browser press Enter
+cmux browser press Escape
+cmux browser keydown Control
+cmux browser keyup Control
+```
+
+### browser get
+
+Extract element data:
+
+```bash
+cmux browser get text ".title"
+cmux browser get html "#content"
+cmux browser get value "input[name='email']"
+cmux browser get attr "img" --attr src
+cmux browser get count ".item"
+cmux browser get box ".element"
+cmux browser get styles ".button" --property color
+cmux browser get title
+cmux browser get url
+```
+
+### browser is
+
+Check element state:
+
+```bash
+cmux browser is visible ".modal"
+cmux browser is enabled "button.submit"
+cmux browser is checked "input[type='checkbox']"
+```
+
+### browser find
+
+Find elements by locator:
+
+```bash
+cmux browser find role button --name Submit
+cmux browser find text "Click here" --exact
+cmux browser find label "Email"
+cmux browser find placeholder "Enter your name"
+cmux browser find testid login-button
+cmux browser find first ".item"
+cmux browser find last ".item"
+cmux browser find nth ".item" 2
+```
+
+### browser screenshot
+
+Capture screenshot:
+
+```bash
+cmux browser screenshot --out page.png
+cmux browser screenshot --json  # base64 output
+```
+
+## Tmux compatibility commands
+
+These commands provide tmux-like functionality:
+
+### capture-pane
+
+Alias for `read-screen`:
+
+```bash
+cmux capture-pane --scrollback
+cmux capture-pane --lines 100 --surface surface:1
+```
+
+### resize-pane
+
+Resize a pane:
+
+```bash
+cmux resize-pane --pane pane:1 -R 10
+cmux resize-pane --pane pane:2 -L 5
+cmux resize-pane --pane pane:1 -U --amount 3
+```
+
+### last-pane
+
+Switch to last focused pane:
+
+```bash
+cmux last-pane
+cmux last-pane --workspace workspace:1
+```
+
+### next-window / previous-window
+
+Navigate workspaces:
+
+```bash
+cmux next-window
+cmux previous-window
+cmux last-window
+```
+
+### clear-history
+
+Clear terminal scrollback:
+
+```bash
+cmux clear-history
+cmux clear-history --surface surface:1
+```
+
+## Advanced commands
+
+### tree
+
+Show workspace hierarchy:
+
+```bash
+cmux tree
+cmux tree --all  # all workspaces
+cmux tree --workspace workspace:1
+```
+
+### surface-health
+
+Check surface status:
+
+```bash
+cmux surface-health
+cmux surface-health --workspace workspace:1 --json
+```
+
+### trigger-flash
+
+Flash a surface visually:
+
+```bash
+cmux trigger-flash
+cmux trigger-flash --surface surface:2
+```
+
+### drag-surface-to-split
+
+Drag surface to create split:
+
+```bash
+cmux drag-surface-to-split --surface surface:1 right
+cmux drag-surface-to-split --surface 0 down
+```
+
+### refresh-surfaces
+
+Refresh all surfaces:
+
+```bash
+cmux refresh-surfaces
+```
+
+## Exit codes
+
+- `0`: Success
+- `1`: Error (error message written to stderr)
+
+## Examples
+
+<CodeGroup>
+```bash Create workspace and run dev server
+cmux new-workspace --cwd ~/projects/app --command "npm run dev"
+```
+
+```bash Monitor logs from current terminal
+while true; do
+  cmux read-screen --lines 50
+  sleep 2
+done
+```
+
+```bash Automate browser testing
+cmux browser open https://example.com/login
+cmux browser wait --selector "input[name='username']"
+cmux browser type "input[name='username']" testuser
+cmux browser type "input[name='password']" secret
+cmux browser click "button[type='submit']"
+cmux browser wait --url-contains "/dashboard"
+cmux browser snapshot --interactive > test-result.txt
+```
+
+```bash Send command to all workspaces
+for ws in $(cmux list-workspaces --json | jq -r '.[].id'); do
+  cmux send --workspace "$ws" "echo Processing workspace $ws"
+done
+```
+</CodeGroup>

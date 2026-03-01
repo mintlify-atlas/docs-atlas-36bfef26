@@ -1,80 +1,300 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Get up and running with cmux in 5 minutes
 ---
 
-## Get started in three steps
+This guide will get you from installation to your first meaningful workflow: creating workspaces, setting up notifications, and using the in-app browser.
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
+- cmux installed (see [Installation](/installation))
+- Basic familiarity with terminal commands
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+## Launch cmux
+
+Open cmux from your Applications folder or via Spotlight (`Cmd+Space`, type "cmux").
+
+On first launch, you'll see a single workspace with a terminal. The sidebar on the left shows your workspace tabs.
+
+## Create a workspace
+
+Workspaces are the top-level organizing unit in cmux. Each workspace can contain multiple split panes and surfaces (terminals and browsers).
+
+<Steps>
+  <Step title="Create a new workspace">
+    Press `Cmd+N` or use the CLI:
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    ```bash
+    cmux new-workspace
+    ```
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+    You can also create a workspace in a specific directory:
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    ```bash
+    cmux new-workspace --cwd ~/projects/myapp
+    ```
+  </Step>
+  
+  <Step title="Navigate between workspaces">
+    Use keyboard shortcuts to switch workspaces:
+    
+    | Shortcut | Action |
+    |----------|--------|
+    | `Cmd+1–8` | Jump to workspace 1–8 |
+    | `Cmd+9` | Jump to last workspace |
+    | `Ctrl+Cmd+]` | Next workspace |
+    | `Ctrl+Cmd+[` | Previous workspace |
+  </Step>
+  
+  <Step title="Rename a workspace">
+    Press `Cmd+Shift+R` or use the CLI:
+    
+    ```bash
+    cmux rename-workspace "My Project"
+    ```
+  </Step>
+</Steps>
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+## Split panes
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+Split your workspace horizontally or vertically to work with multiple terminals side-by-side.
 
-### Step 3: Go live
+<Steps>
+  <Step title="Split right">
+    Press `Cmd+D` to create a vertical split.
+  </Step>
+  
+  <Step title="Split down">
+    Press `Cmd+Shift+D` to create a horizontal split.
+  </Step>
+  
+  <Step title="Navigate between panes">
+    Use `Opt+Cmd+Arrow` to focus panes directionally.
+  </Step>
+  
+  <Step title="Flash focused pane">
+    Press `Cmd+Shift+H` to briefly highlight which pane has focus.
+  </Step>
+</Steps>
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+You can also split panes via CLI:
+
+```bash
+cmux new-split right
+cmux new-split down
+```
+
+## Set up notifications
+
+Notifications are cmux's killer feature for working with AI coding agents. When an agent needs your attention, its pane gets a blue ring and the tab lights up.
+
+<Steps>
+  <Step title="Send a test notification">
+    ```bash
+    cmux notify --title "Build Complete" --subtitle "myapp" --body "Tests passed"
+    ```
+    
+    You'll see:
+    - A blue ring around the current pane
+    - The workspace tab glows in the sidebar
+    - The notification appears in the notification panel
+  </Step>
+  
+  <Step title="Open the notification panel">
+    Press `Cmd+I` to see all notifications.
+  </Step>
+  
+  <Step title="Jump to latest unread">
+    Press `Cmd+Shift+U` to jump to the most recent unread notification.
+  </Step>
+  
+  <Step title="Clear notifications">
+    ```bash
+    cmux clear-notifications
+    ```
+  </Step>
+</Steps>
+
+### Terminal notification sequences
+
+cmux also picks up standard terminal notification sequences (OSC 9/99/777):
+
+```bash
+# OSC 777
+echo -e "\033]777;notify;Build Complete;Tests passed\033\\"
+
+# OSC 9
+echo -e "\033]9;Build Complete\033\\"
+
+# OSC 99
+echo -e "\033]99;i=1:p=body;Build Complete\033\\"
+```
+
+## Use the in-app browser
+
+The in-app browser lets you view and automate web pages alongside your terminal.
+
+<Steps>
+  <Step title="Open browser in split">
+    Press `Cmd+Shift+L` or use the CLI:
+    
+    ```bash
+    cmux browser open http://localhost:3000
+    ```
+  </Step>
+  
+  <Step title="Navigate to a URL">
+    Press `Cmd+L` to focus the address bar, type a URL, and press Enter.
+    
+    Or via CLI:
+    
+    ```bash
+    cmux browser navigate http://example.com
+    ```
+  </Step>
+  
+  <Step title="Browser shortcuts">
+    | Shortcut | Action |
+    |----------|--------|
+    | `Cmd+L` | Focus address bar |
+    | `Cmd+[` | Back |
+    | `Cmd+]` | Forward |
+    | `Cmd+R` | Reload page |
+    | `Opt+Cmd+I` | Toggle Developer Tools |
+    | `Opt+Cmd+C` | Show JavaScript Console |
+  </Step>
+</Steps>
+
+### Scriptable browser API
+
+The browser has a scriptable API ported from [agent-browser](https://github.com/vercel-labs/agent-browser) for automation:
+
+```bash
+# Get current URL
+cmux browser get-url
+
+# Navigate back/forward
+cmux browser back
+cmux browser forward
+
+# Reload page
+cmux browser reload
+```
+
+For advanced automation (accessibility tree snapshots, element interactions), see the [Browser CLI reference](/cli/browser).
+
+## Integrate with AI coding agents
+
+cmux is designed to work seamlessly with AI coding tools. Here's how to integrate with popular agents:
+
+### Claude Code
+
+cmux has built-in Claude Code integration. To enable it:
+
+<Steps>
+  <Step title="Set up the hook">
+    cmux can automatically notify you when Claude Code is waiting. The integration is enabled by default in recent versions.
+    
+    When Claude Code pauses for input, you'll see a notification in the workspace where it's running.
+  </Step>
+  
+  <Step title="Resume from notifications">
+    Press `Cmd+Shift+U` to jump to the latest Claude Code prompt.
+  </Step>
+</Steps>
+
+### OpenCode
+
+For OpenCode or other agents, use the `cmux notify` command in your shell prompts or agent hooks:
+
+```bash
+# In your agent's output handler
+cmux notify --title "OpenCode" --subtitle "Waiting for input" --body "$PROMPT_TEXT"
+```
+
+### Custom integrations
+
+You can wire `cmux notify` into any tool that supports custom commands or hooks:
+
+```bash
+# Example: notify when a long build finishes
+make build && cmux notify --title "Build" --body "Build succeeded" || cmux notify --title "Build" --body "Build failed"
+```
+
+## Keyboard shortcuts reference
+
+Here are the essential shortcuts to get started:
+
+### Workspaces
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd+N` | New workspace |
+| `Cmd+1–8` | Jump to workspace 1–8 |
+| `Cmd+9` | Jump to last workspace |
+| `Ctrl+Cmd+]` | Next workspace |
+| `Ctrl+Cmd+[` | Previous workspace |
+| `Cmd+Shift+W` | Close workspace |
+| `Cmd+Shift+R` | Rename workspace |
+| `Cmd+B` | Toggle sidebar |
+
+### Split panes
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd+D` | Split right |
+| `Cmd+Shift+D` | Split down |
+| `Opt+Cmd+Arrow` | Focus pane directionally |
+| `Cmd+Shift+H` | Flash focused panel |
+
+### Notifications
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd+I` | Show notifications panel |
+| `Cmd+Shift+U` | Jump to latest unread |
+
+### Browser
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd+Shift+L` | Open browser in split |
+| `Cmd+L` | Focus address bar |
+| `Cmd+[` | Back |
+| `Cmd+]` | Forward |
+| `Cmd+R` | Reload page |
+
+For a complete list, see [Keyboard Shortcuts](/features/keyboard-shortcuts).
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
-
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card
+    title="Workspaces & Tabs"
+    icon="window-restore"
+    href="/features/workspaces-and-tabs"
+  >
+    Learn advanced workspace management
+  </Card>
+  <Card
+    title="Notifications"
+    icon="bell"
+    href="/features/notifications"
+  >
+    Master the notification system
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/automation/cli-reference"
+  >
+    Explore all CLI commands
+  </Card>
+  <Card
+    title="Browser Automation"
+    icon="browser"
+    href="/cli/browser"
+  >
+    Automate the in-app browser
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
